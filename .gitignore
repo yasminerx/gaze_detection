@@ -1,1 +1,3 @@
-"mediapipe/env/"
+mediapipe/env/
+realsense_ros_docker_local/
+pointing_gesture_recognition_local/
