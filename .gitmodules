@@ -1,6 +1,0 @@
-[submodule "realsense_ros_docker"]
-	path = realsense_ros_docker
-	url = https://github.com/hoenigpeter/realsense_ros_docker.git
-[submodule "pointing_gesture_recognition"]
-	path = pointing_gesture_recognition
-	url = https://github.com/v4r-tuwien/pointing_gesture_recognition
