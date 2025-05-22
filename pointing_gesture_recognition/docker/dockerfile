@@ -60,6 +60,10 @@ RUN /bin/bash -c  '. /opt/ros/noetic/setup.bash; cd /root/catkin_ws; catkin conf
 # clone and build message and service definitions
 RUN /bin/bash -c 'cd /root/catkin_ws/src; \
                   git clone https://github.com/v4r-tuwien/object_detector_msgs.git'
+#add modifications from overlay folder
+COPY overlay/object_detector_msgs/CMakeLists.txt /root/catkin_ws/src/object_detector_msgs/CMakeLists.txt
+COPY overlay/object_detector_msgs/srv/estimate_eye_position.srv /root/catkin_ws/src/object_detector_msgs/srv/estimate_eye_position.srv
+
 RUN /bin/bash -c '. /opt/ros/noetic/setup.bash; cd /root/catkin_ws; catkin build'
 
 COPY requirements.txt .
