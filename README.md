@@ -1,18 +1,26 @@
-# Pointing Gesture Detector ROS Node
+# Gaze and pointing detection
 
-This repository contains a ROS node that processes depth and RGB image streams to detect arm keypoints and publish pointing arrows, a pointing indicator, and right arm joints. The published topics can be visualized in RViz.
+## Pointing and gaze detection node : 
+```bash
+cd pointing_gesture_recognition
+```
+
+This repository contains a ROS node that processes depth and RGB image streams to detect arm keypoints as well as gaze direction and publishes pointing the correspondings arrows. The published topics can be visualized in RViz.
 This implementation is based on the work of Matthias Grabners Robot Vision project "Show me what to pick".
 
-## Features
+### Features
 
 - Detects arm keypoints using MediaPipe.
+- Detects the pupil and other useful face keypoints using Mediapipe.
 - Publishes markers for arm joints and pointing arrows in RViz.
+- Publishes arros for gaze direction in RViz.
 - Indicates whether a pointing gesture is detected.
+- Indicates whether a face is detected.
 - Configurable parameters for flexibility in different environments.
 
-## Getting Started
+### Getting Started
 
-### Prerequisites
+#### Prerequisites
 
 - ROS (Robot Operating System)
 - Docker (for running the node in a container)
@@ -21,7 +29,7 @@ This implementation is based on the work of Matthias Grabners Robot Vision proje
 - NumPy
 - Matplotlib
 
-### Installation
+#### Installation
 
 Clone the repository:
 
@@ -30,7 +38,7 @@ git clone https://github.com/v4r-tuwien/pointing_gesture_recognition.git
 cd pointing_gesture_recognition
 ```
 
-### Docker Setup
+#### Docker Setup
 
 Build the Docker image:
 
@@ -50,12 +58,13 @@ source start.sh
 ```
 
 
-### Running the Node
+#### Running the Node
 
-You can start the ROS node using the following command:
+You can start the ROS node using the following commands regarding what you want to detect :
 
 ```bash
 python pointing_detector.py
+python gaze_detector.py
 ```
 
 ### Configuration
