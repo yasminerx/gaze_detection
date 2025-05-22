@@ -38,6 +38,18 @@ Build the Docker image:
 docker_build.sh
 ```
 
+To start the Docker image for the first time :
+```bash
+./run_docker.sh
+```
+
+Then, in the docker :
+```bash
+cd code/
+source start.sh
+```
+
+
 ### Running the Node
 
 You can start the ROS node using the following command:
