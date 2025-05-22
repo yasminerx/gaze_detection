@@ -1,0 +1,20 @@
+#dans le premier terminal :
+docker run -it --network host -v /home/yasmine/Documents/v4r/pointing_gesture_recognition:/code pointing_gesture_recognition bash
+
+#les autres fois :
+docker start docker_pointing
+ # -> lancer ros
+roscore
+
+
+#rename le docker
+docker ps
+docker rename old_name docker_pointing
+docker exec -it docker_pointing bash
+
+
+# dans le docker
+catkin build
+source /root/catkin_ws/devel/setup.bash 
+export CONFIG=params_realsense.yaml
+rosparam load /code/${CONFIG} /pose_estimator
