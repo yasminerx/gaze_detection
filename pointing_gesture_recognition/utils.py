@@ -9,6 +9,26 @@ import numpy as np
 import mediapipe as mp
 import argparse
 
+def kalman_predict(xup, Gup, u, gamma_alpha, A):
+    gamma_1 = A @ Gup @ A.T + gamma_alpha
+    x1 = A @ xup + u
+    return x1, gamma_1
+
+def kalman_correct(x0, gamma_0, y, C, gamma_beta):
+    S = C @ gamma_0 @ C.T + gamma_beta
+    K = gamma_0 @ C.T @ np.linalg.inv(S)
+    y_tilde = y - C @ x0
+    Gup = (eye(len(x0)) - K @ C) @ gamma_0
+    xup = x0 + K @ y_tilde
+    return xup, Gup
+
+def kalman(x0, gamma_0, u, gamma_alpha, A, y, C, gamma_beta)
+    Xup, Gup = kalman_correct(x0, gamma_0, y, C, gamma_beta)
+    x1, gamma_1 = kalman_predict(xup, Gup, u, gamma_alpha, A)
+    return x1, gamma_1
+
+
+
 def set_point(point, keypoint):
     # Set the coordinates of a geometry_msgs point to the coordinates of a keypoint
     point.x = keypoint[0]
