@@ -27,11 +27,12 @@ def init_kalman():
     kf.Q *= 0.01
     return kf
 
+
 def update_kalman(kf, z_measured):
     kf.predict()
     kf.update(z_measured)
-    z_filtered = kf.x[:3].flaten()
-    return z_filtered / np.linalg.norm(z_filtered)
+    z_filtered = kf.x[:3].flatten()
+    return kf, z_filtered / np.linalg.norm(z_filtered)
     
 def set_point(point, keypoint):
     # Set the coordinates of a geometry_msgs point to the coordinates of a keypoint
@@ -77,6 +78,7 @@ def get_head_coordinate_system(keypoints_cc):
     z_vector = np.cross(x_vector, y_vector)
     z_vector = z_vector / np.linalg.norm(z_vector)
     head_coordinate_system = np.array([x_vector, y_vector, z_vector])
+
     return head_coordinate_system
 
 

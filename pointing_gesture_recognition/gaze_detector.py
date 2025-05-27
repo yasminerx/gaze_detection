@@ -13,6 +13,7 @@ import cv2
 import numpy as np
 import mediapipe as mp
 import argparse
+from one_euro_filter import OneEuroFilter
 
 from utils import *
 
@@ -41,6 +42,14 @@ class GazeDetector:
 
         # initialise the face detection model
         self.mp_face_mesh = mp.solutions.face_mesh
+
+        # initalise the filters
+        self.kf = init_kalman()
+        t0 = rospy.Time.now().to_sec()
+        # min_cutoff : sensibilité aux changements rapides (haut = moins de lissage)
+        # beta : réactivité aux changements rapides (haut = plus de variations acceptées)
+        self.dx_filter = OneEuroFilter(t0, 0.0, min_cutoff=1.0, beta=0.007)
+        self.dy_filter = OneEuroFilter(t0, 0.0, min_cutoff=1.0, beta=0.007)
 
         # Pose detection model complexity (0, 1, 2) can be set as rosparam
         model_complexity = model_complexity
@@ -233,6 +242,10 @@ class GazeDetector:
  
     def update_head_coordinate_system(self, gaze_keypoints_cc):
         head_coordinate_system = get_head_coordinate_system(gaze_keypoints_cc)
+        # update z with the kalman filter
+        self.kf, head_coordinate_system[2] = update_kalman(self.kf, head_coordinate_system[2])
+
+        # plot with rviz the arrows
         origin = gaze_keypoints_cc['nose_bridge']
         end_x = origin + head_coordinate_system[0] * self.arrow_length
         end_y = origin + head_coordinate_system[1] * self.arrow_length
@@ -306,6 +319,12 @@ class GazeDetector:
             
             head_coordinate_system = self.update_head_coordinate_system(gaze_keypoints_cc)
             dx ,dy = get_eye_direction(gaze_keypoints_cc, head_coordinate_system)
+
+            # apply the one euro filter to the dx and dy values
+            t = rospy.Time.now().to_sec()
+            dx = self.dx_filter(t, dx)
+            dy = self.dy_filter(t, dy)
+            
             self.update_gaze_marker(dx, dy, head_coordinate_system, gaze_keypoints_cc)
             
             if eye_detected['right']:
