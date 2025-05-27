@@ -1,0 +1,24 @@
+version: '2.4'
+
+services:
+
+  docker_pointing:
+    image: docker_pointing
+    privileged: true
+    build:
+      context: .
+      dockerfile: dockerfile
+    network_mode: "host"
+    runtime: "nvidia"
+    volumes:
+      - /home/yasmine/Documents/v4r_yasmine/gaze_detection/pointing_gesture_recognition:/root/code/
+      - /dev/bus/usb:/dev/bus/usb
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw
+    environment:
+      - ROS_MASTER_URI=http://10.0.143:11311
+      - ROS_IP=10.0.0.238
+      - DISPLAY
+      - QT_X11_NO_MITSHM=1
+    command: bash -c "source code/start_sasha.sh; rviz"
+    stdin_open: true
+    tty: true 

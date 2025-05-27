@@ -16,7 +16,7 @@ import argparse
 
 from utils import *
 
-class PointingDetector:
+class IrisDetector:
     def __init__(
             self,
             frame_id="camera_color_optical_frame",
@@ -207,9 +207,9 @@ def parse_opt():
 
 if __name__ == "__main__":
     try:
-        rospy.init_node('pointingdetector')
+        rospy.init_node('irisdetector')
         opt = parse_opt()
-        PointingDetector(**vars(opt))
+        IrisDetector(**vars(opt))
         rospy.spin()
     except rospy.ROSInterruptException:
         pass
