@@ -33,9 +33,9 @@ class GazeDetector:
         self.camera_info = np.asarray(rospy.get_param('/pose_estimator/intrinsics'))
         self.depth_encoding = rospy.get_param('/pose_estimator/depth_encoding')
         self.depth_scale = rospy.get_param('/pose_estimator/depth_scale')        
-        self.frame_id = frame_id
-        self.color_topic = color_topic
-        self.depth_topic = depth_topic
+        self.frame_id = rospy.get_param('/pose_estimator/color_frame_id')  
+        self.color_topic = rospy.get_param('/pose_estimator/color_topic')  
+        self.depth_topic = rospy.get_param('/pose_estimator/depth_topic')  
 
         # Setup CvBridge to convert ROS messages to OpenCV readable images
         self.bridge = CvBridge()
@@ -324,7 +324,7 @@ class GazeDetector:
             t = rospy.Time.now().to_sec()
             dx = self.dx_filter(t, dx)
             dy = self.dy_filter(t, dy)
-            
+
             self.update_gaze_marker(dx, dy, head_coordinate_system, gaze_keypoints_cc)
             
             if eye_detected['right']:
