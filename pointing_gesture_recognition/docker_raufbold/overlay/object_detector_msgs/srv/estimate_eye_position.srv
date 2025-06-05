@@ -1,0 +1,5 @@
+sensor_msgs/Image rgb
+sensor_msgs/Image depth
+---
+geometry_msgs/Point right_eye
+geometry_msgs/Point left_eye
