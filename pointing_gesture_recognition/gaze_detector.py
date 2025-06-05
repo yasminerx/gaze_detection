@@ -20,9 +20,6 @@ from utils import *
 class GazeDetector:
     def __init__(
             self,
-            frame_id="camera_color_optical_frame",
-            color_topic="/camera/color/image_raw",
-            depth_topic="/camera/aligned_depth_to_color/image_raw",
             arm_angle_thresh=120.0,
             arrow_length=2.0,
             model_complexity=1,
@@ -388,9 +385,6 @@ class GazeDetector:
 
 def parse_opt():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--frame-id', type=str, default='camera_color_optical_frame')
-    parser.add_argument('--color-topic', type=str, default='/camera/color/image_raw')
-    parser.add_argument('--depth-topic', type=str, default='/camera/aligned_depth_to_color/image_raw')
     parser.add_argument('--arm-angle-thresh', type=float, default=140.0)
     parser.add_argument('--arrow-length', type=float, default=2.0)
     parser.add_argument('--model-complexity', type=int, default=1)

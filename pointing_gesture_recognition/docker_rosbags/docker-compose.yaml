@@ -1,0 +1,16 @@
+version: '3.8'
+
+services:
+  rosbag_reader:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - /home/yasmine/Documents/v4r_yasmine/gaze_detection/pointing_gesture_recognition:/root/code/
+      - /dev/bus/usb:/dev/bus/usb
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw
+    environment:
+      - DISPLAY
+    stdin_open: true
+    command: bash -c "source /opt/ros/noetic/setup.bash; roscore"
+    tty: true
