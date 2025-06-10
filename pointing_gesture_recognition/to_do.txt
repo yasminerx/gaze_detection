@@ -18,3 +18,8 @@ catkin build
 source /root/catkin_ws/devel/setup.bash 
 export CONFIG=params_realsense.yaml
 rosparam load /code/${CONFIG} /pose_estimator
+
+
+rosrun tf static_transform_publisher 0 0 0 0 0 0 heatilt_link head_rgbd_sensor_rgb_frame 100
+rosrun tf static_transform_publisher 0 0 0 0 0 0 base_footprint base_link 100
+
