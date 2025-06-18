@@ -220,6 +220,7 @@ class GazeDetector:
                          "upper_left": 159,
                          "lower_left": 145,}
         if face_results.multi_face_landmarks:
+            rospy.loginfo("Face landmarks detected")
             for face_landmarks in face_results.multi_face_landmarks:
                 # get the x, y coordinates of the pupils
                 for side, i in pupil_indices.items():
@@ -233,6 +234,8 @@ class GazeDetector:
             gaze_keypoints['right_eye_center'] = (np.array(gaze_keypoints["inner_right"]) + np.array(gaze_keypoints['outer_right']))/2
             gaze_keypoints['left_eye_center'] = (np.array(gaze_keypoints['inner_left']) + np.array(gaze_keypoints['outer_left']))/2
 
+        else:
+            rospy.loginfo("No face landmarks detected")
         # no need to compensate the depth value (?? to be checked)
         #rospy.loginfo("get_eye_keypoints finished")
         return gaze_keypoints, eye_detected

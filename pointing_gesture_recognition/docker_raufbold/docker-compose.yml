@@ -16,7 +16,7 @@ services:
       - /tmp/.X11-unix:/tmp/.X11-unix:rw
     environment:
       - ROS_MASTER_URI=http://10.0.143:11311
-      - ROS_IP=10.0.0.221
+      - ROS_IP=10.0.0.238
       - DISPLAY
       - QT_X11_NO_MITSHM=1
     command: bash -c "source code/start_sasha.sh; rviz"
