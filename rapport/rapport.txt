@@ -1,0 +1,75 @@
+Robot utilisé
+Tu utilises un robot de type HSR (Human Support Robot).
+
+Il est équipé de :
+
+Une caméra RGBD (topic : /hsrb/head_rgbd_sensor/...),
+
+Un RPLidar A2,
+
+D’autres capteurs (GNSS, inertiel… dans d'autres projets),
+
+Il tourne sous ROS Noetic.
+
+Fonctionnalités développées ou testées
+Récupération d’images RGB et pointclouds pour traitement,
+
+Enregistrement et lecture de rosbags contenant images, tf, et markers,
+
+Travail sur le transform tree (TF), notamment entre map et head_rgbd_sensor_rgb_frame,
+
+Vérification de la cohérence des frames et de leur diffusion (tf, tf_static),
+
+Test et debug d’un marqueur ArUco ou équivalent (topic /found_markers_array),
+
+Utilisation d’RViz pour vérifier la localisation et le mapping,
+
+Manipulation de topics très lourds (images et pointclouds), gestion de leur enregistrement.
+
+Environnement logiciel
+Tu travailles dans un dossier ~/Yasmine,
+
+Tu utilises des scripts Python (marker_gaze_estimation.py, tf_broadcaster.py...),
+
+ROS Noetic, Ubuntu (probablement 20.04),
+
+Tu utilises rosbag, rviz, tf_echo, tf view_frames, rqt_graph, etc.
+
+
+Contexte général de ton stage
+Sujet principal : Détection de gestes de pointage (pointing gestures) dans un environnement ROS.
+
+Objectif : Intégrer un système capable de détecter les gestes de pointage via une caméra, pour ensuite transmettre cette information à un robot (ou à un autre système) en ROS.
+
+Technos utilisées :
+
+ROS1 (Noetic) comme framework principal
+
+Docker pour l’isolation de l’environnement de développement
+
+Python pour les scripts de traitement et de lancement des nodes
+
+Réseau ROS pour la communication entre différents composants (via topics, paramètres, etc.)
+
+Composants techniques identifiés
+Tu disposes d’un dossier de projet contenant :
+
+Deux scripts Python :
+
+Dont un nommé pointing_detector.py (le cœur de la détection)
+
+Un dossier Docker préconfiguré
+
+Un package ROS object_detector_msgs avec des définitions de messages (mais pas de node)
+
+Tu exécutes ROS dans un conteneur Docker, mais certains scripts (comme pointing_detector.py) n’étaient initialement pas montés dans le conteneur, ce qui t’a obligée à les copier ou à les intégrer.
+
+L’erreur KeyError: '/pose_estimator/intrinsics' suggère que ton script attend un paramètre ROS intrinsics (paramètre caméra), non encore défini ou lancé par un autre node.
+
+Ton stage – contexte général
+📍 Lieu : TU Wien – laboratoire Vision for Robotics (V4R), avec Markus Vincze
+
+📆 Période : mi-avril à fin septembre 2025 (environ 4,5 mois)
+
+🎯 Objectif : choisir un sujet de stage dans le domaine de la vision par ordinateur appliquée à la robotique, parmi plusieurs propositions du labo (notamment autour de ViT, pose estimation, semantic flow…)
+
