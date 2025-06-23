@@ -1,6 +1,5 @@
 import numpy as np
 
-
 def smoothing_factor(t_e, cutoff):
     r = 2 * np.pi * cutoff * t_e
     return r / (r + 1)
