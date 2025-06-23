@@ -4,8 +4,8 @@ import mediapipe as mp
 from filters import OneEuroFilter, KalmanWrapper
 
 
-class GazeDetecto
-    def __init__(self, model_complexity=1, static_image_mode=False):
+class GazeDetector:
+    def __init__(self, camera_info, depth_encoding, depth_scale, model_complexity=1, static_image_mode=False):
         # initialise the face detection model
         self.mp_face_mesh = mp.solutions.face_mesh
 
@@ -119,13 +119,7 @@ class GazeDetecto
             dx = self.dx_filter(t, dx)
             dy = self.dy_filter(t, dy)
 
-            
-            if eye_detected['right']:
-                self.is_looking = True
-            if eye_detected['left']:
-                self.is_looking = True
-
-            return gaze_keypoints_cc, self.is_looking
+            return gaze_keypoints_cc, eye_detected, head_coordinate_system, dx, dy
         else:
             return None
 
