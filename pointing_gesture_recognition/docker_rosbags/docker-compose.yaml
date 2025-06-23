@@ -6,7 +6,8 @@ services:
       context: .
       dockerfile: Dockerfile
     volumes:
-      - /home/yasmine/Documents/v4r_yasmine/gaze_detection/pointing_gesture_recognition:/root/code/
+      # - /home/yasmine/Documents/v4r_yasmine/gaze_detection/pointing_gesture_recognition:/root/code/
+      - /home/yasmine/Documents/gaze_detection/pointing_gesture_recognition:/root/code/
       - /dev/bus/usb:/dev/bus/usb
       - /tmp/.X11-unix:/tmp/.X11-unix:rw
     environment:
