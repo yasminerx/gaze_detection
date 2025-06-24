@@ -10,6 +10,8 @@ from object_detector_msgs.srv import estimate_eye_position
 from object_detector_msgs.srv import estimate_eye_positionResponse
 
 from gaze_lib.detector import GazeDetector
+import numpy as np
+
 
 class GazeRosNode :
     def __init__(self):
@@ -22,7 +24,8 @@ class GazeRosNode :
 
         # Setup CvBridge to convert ROS messages to OpenCV readable images
         self.bridge = CvBridge()
-        self.detector = GazeDetector(self.camera_info, self.depth_encoding, self.depth_scale)
+        t0 = rospy.Time.now().to_sec()
+        self.detector = GazeDetector(t0, self.camera_info, self.depth_encoding, self.depth_scale)
 
         # ros services :
         self.service = rospy.Service("/gaze_callback", estimate_eye_position, self.gaze_callback)
@@ -206,33 +209,33 @@ class GazeRosNode :
                 self.middle_right_eye.pose.position.y = (gaze_keypoints_cc['inner_right'][1]+gaze_keypoints_cc['outer_right'][1])/2
                 self.middle_right_eye.pose.position.z = (gaze_keypoints_cc['inner_right'][2]+gaze_keypoints_cc['outer_right'][2])/2
                 self.pub_right_eye.publish(self.middle_right_eye)
-            else:
-                self.right_eye.action = Marker.DELETE
-                self.pub_right_eye.publish(self.right_eye)
+        else:
+            self.right_eye.action = Marker.DELETE
+            self.pub_right_eye.publish(self.right_eye)
 
-                self.middle_right_eye.action = Marker.DELETE
-                self.pub_right_eye.publish(self.middle_right_eye)
-            
-            if eye_detected['left']:
-                self.left_eye.action = Marker.ADD
-                self.left_eye.header.stamp = rospy.Time.now()
-                self.left_eye.pose.position.x = gaze_keypoints_cc['left'][0]
-                self.left_eye.pose.position.y = gaze_keypoints_cc['left'][1]
-                self.left_eye.pose.position.z = gaze_keypoints_cc['left'][2]
-                self.pub_left_eye.publish(self.left_eye)
+            self.middle_right_eye.action = Marker.DELETE
+            self.pub_right_eye.publish(self.middle_right_eye)
+        
+        if eye_detected['left']:
+            self.left_eye.action = Marker.ADD
+            self.left_eye.header.stamp = rospy.Time.now()
+            self.left_eye.pose.position.x = gaze_keypoints_cc['left'][0]
+            self.left_eye.pose.position.y = gaze_keypoints_cc['left'][1]
+            self.left_eye.pose.position.z = gaze_keypoints_cc['left'][2]
+            self.pub_left_eye.publish(self.left_eye)
 
-                self.middle_left_eye.action = Marker.ADD
-                self.middle_left_eye.header.stamp = rospy.Time.now()
-                self.middle_left_eye.pose.position.x = (gaze_keypoints_cc['inner_left'][0]+gaze_keypoints_cc['outer_left'][0])/2
-                self.middle_left_eye.pose.position.y = (gaze_keypoints_cc['inner_left'][1]+gaze_keypoints_cc['outer_left'][1])/2
-                self.middle_left_eye.pose.position.z = (gaze_keypoints_cc['inner_left'][2]+gaze_keypoints_cc['outer_left'][2])/2
-                self.pub_left_eye.publish(self.middle_left_eye)
-            else:
-                self.left_eye.action = Marker.DELETE
-                self.pub_left_eye.publish(self.left_eye)
+            self.middle_left_eye.action = Marker.ADD
+            self.middle_left_eye.header.stamp = rospy.Time.now()
+            self.middle_left_eye.pose.position.x = (gaze_keypoints_cc['inner_left'][0]+gaze_keypoints_cc['outer_left'][0])/2
+            self.middle_left_eye.pose.position.y = (gaze_keypoints_cc['inner_left'][1]+gaze_keypoints_cc['outer_left'][1])/2
+            self.middle_left_eye.pose.position.z = (gaze_keypoints_cc['inner_left'][2]+gaze_keypoints_cc['outer_left'][2])/2
+            self.pub_left_eye.publish(self.middle_left_eye)
+        else:
+            self.left_eye.action = Marker.DELETE
+            self.pub_left_eye.publish(self.left_eye)
 
-                self.middle_left_eye.action = Marker.DELETE
-                self.pub_left_eye.publish(self.middle_left_eye)
+            self.middle_left_eye.action = Marker.DELETE
+            self.pub_left_eye.publish(self.middle_left_eye)
 
 
     def gaze_callback(self, req):
@@ -240,10 +243,19 @@ class GazeRosNode :
         rgb = req.rgb
         depth = req.depth
 
-        detected_gaze_keypoints_cc, eye_detected, head_coordinate_system, dx, dy = self.detector.detect_eye_gaze(rgb, depth, rospy.Time.now().to_sec())
-
         try :
+            detected_gaze_keypoints_cc, eye_detected, head_coordinate_system, dx, dy = self.detector.detect_eye_gaze(rgb, depth, rospy.Time.now().to_sec())
             self.update_markers(dx, dy, head_coordinate_system, detected_gaze_keypoints_cc)
             self.update_eye_markers(detected_gaze_keypoints_cc, eye_detected)
         except Exception as e:
             rospy.logerr(f"Error updating markers: {e}")
+
+
+if __name__ == "__main__":
+    try:
+        rospy.init_node('gazenodedetector')
+        GazeRosNode()
+        rospy.loginfo("Gaze detector node initialized")
+        rospy.spin()
+    except rospy.ROSInterruptException:
+        pass
