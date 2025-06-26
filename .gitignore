@@ -1,3 +1,4 @@
 mediapipe/env/
 pointing_gesture_recognition/rosbag/
+pointing_gesture_recognition/rosbags/
 pointing_gesture_recognition/manigaze_dataset/
