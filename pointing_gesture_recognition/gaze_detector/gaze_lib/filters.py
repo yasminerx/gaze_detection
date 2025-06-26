@@ -66,4 +66,9 @@ class KalmanWrapper:
         self.kf.predict()
         self.kf.update(z_measured)
         z_filtered = self.kf.x[:3].flatten()
-        return self.kf, z_filtered / np.linalg.norm(z_filtered)
+        if np.linalg.norm(z_filtered) == 0:
+            z_filtered = np.array([1.0, 0.0, 0.0])
+            print("Warning! Kalman filter output is zero, setting to default [1.0, 0.0, 0.0]")
+        else:
+            z_filtered /= np.linalg.norm(z_filtered)
+        return self.kf, z_filtered

@@ -16,7 +16,7 @@ class GazeDetector:
         self.bridge = CvBridge()
 
         # initalise the filters
-        self.kf = KalmanWrapper()
+        self.kw = KalmanWrapper()
         # min_cutoff : sensibilité aux changements rapides (haut = moins de lissage)
         # beta : réactivité aux changements rapides (haut = plus de variations acceptées)
         self.dx_filter = OneEuroFilter(t0, 0.0, min_cutoff=1.0, beta=0.007)
@@ -84,8 +84,10 @@ class GazeDetector:
  
     def update_head_coordinate_system(self, gaze_keypoints_cc):
         head_coordinate_system = get_head_coordinate_system(gaze_keypoints_cc)
+        print("head_coordinate_system", head_coordinate_system)
         # update z with the kalman filter
-        self.kf, head_coordinate_system[2] = self.kf.update(head_coordinate_system[2])
+        self.kw, head_coordinate_system[2] = self.kw.update(head_coordinate_system[2])
+        print("head_coordinate_system", head_coordinate_system)
         return head_coordinate_system
 
 
@@ -112,6 +114,7 @@ class GazeDetector:
         # main face detection 
         face_results = self.face.process(rgb_img)
         gaze_keypoints, eye_detected = self.get_eye_keypoints(face_results, rgb_img, depth_img)
+        print("gaze keypoints", gaze_keypoints)
         if self.eye_detected :
             # convert the pixel coordinates to camera coordinates
             gaze_keypoints_cc = {}
@@ -120,6 +123,9 @@ class GazeDetector:
 
             try:
                 head_coordinate_system = self.update_head_coordinate_system(gaze_keypoints_cc)
+                print("head_coordinate_system", head_coordinate_system)
+
+
             except Exception as e:
                 print(f"Error updating head coordinate system: {e}")
             dx, dy = get_eye_direction(gaze_keypoints_cc, head_coordinate_system)
