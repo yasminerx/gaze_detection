@@ -3,7 +3,7 @@ import numpy as np
 import mediapipe as mp
 from .utils import *
 from .filters import OneEuroFilter, KalmanWrapper
-from cv_bridge import CvBridge, CvBridgeError
+
 
 
 class GazeDetector:
@@ -13,7 +13,6 @@ class GazeDetector:
         self.depth_encoding = depth_encoding
         self.depth_scale = depth_scale
         self.camera_info = camera_info
-        self.bridge = CvBridge()
 
         # initalise the filters
         self.kw = KalmanWrapper()
@@ -94,21 +93,8 @@ class GazeDetector:
         return head_coordinate_system
 
 
-    def detect_eye_gaze(self, rgb, depth, t):
+    def detect_eye_gaze(self, rgb_img, depth_img, t):
         print("detect eye gaze started")
-        try:
-            depth.encoding = self.depth_encoding
-            depth_img = CvBridge().imgmsg_to_cv2(depth, self.depth_encoding)
-            depth_img = depth_img/int(self.depth_scale)
-        except CvBridgeError as e:
-            print(f"Depth Image CvBridge Error: {e}")
-
-        try:
-            # Convert ROS Image message to OpenCV image with rgb8 encoding
-            rgb_img = self.bridge.imgmsg_to_cv2(rgb, "rgb8")
-        except CvBridgeError as e:
-            print(f"RGB Image CvBridge Error: {e}")
-            return None
 
         # is there a face in the imge ?
         self.eye_detected = False
@@ -125,16 +111,20 @@ class GazeDetector:
 
             try:
                 head_coordinate_system = self.update_head_coordinate_system(gaze_keypoints_cc)
+                dx, dy = get_eye_direction(gaze_keypoints_cc, head_coordinate_system)
+
+                # apply the one euro filter to the dx and dy values
+                dx = self.dx_filter(t, dx)
+                dy = self.dy_filter(t, dy)
+                print(f"dx: {dx}, dy: {dy}")
+
             except Exception as e:
                 print(f"Error updating head coordinate system: {e}")
-            dx, dy = get_eye_direction(gaze_keypoints_cc, head_coordinate_system)
+                head_coordinate_system = None
+                dx, dy = 0.0, 0.0 
 
-            # apply the one euro filter to the dx and dy values
-            dx = self.dx_filter(t, dx)
-            dy = self.dy_filter(t, dy)
-            print(f"dx: {dx}, dy: {dy}")
             return gaze_keypoints_cc, eye_detected, head_coordinate_system, dx, dy
         else:
-            return None
+            return None, False, None, 0.0, 0.0
 
 

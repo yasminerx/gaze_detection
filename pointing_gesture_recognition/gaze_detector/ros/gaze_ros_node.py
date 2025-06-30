@@ -243,8 +243,21 @@ class GazeRosNode :
         rgb = req.rgb
         depth = req.depth
 
+        try:
+            depth.encoding = self.depth_encoding
+            depth_img = CvBridge().imgmsg_to_cv2(depth, self.depth_encoding)
+            depth_img = depth_img/int(self.depth_scale)
+        except CvBridgeError as e:
+            print(f"Depth Image CvBridge Error: {e}")
+
+        try:
+            rgb_img = self.bridge.imgmsg_to_cv2(rgb, "rgb8")
+        except CvBridgeError as e:
+            print(f"RGB Image CvBridge Error: {e}")
+
+
         try :
-            detected_gaze_keypoints_cc, eye_detected, head_coordinate_system, dx, dy = self.detector.detect_eye_gaze(rgb, depth, rospy.Time.now().to_sec())
+            detected_gaze_keypoints_cc, eye_detected, head_coordinate_system, dx, dy = self.detector.detect_eye_gaze(rgb_img, depth_img, rospy.Time.now().to_sec())
             self.update_markers(dx, dy, head_coordinate_system, detected_gaze_keypoints_cc)
             self.update_eye_markers(detected_gaze_keypoints_cc, eye_detected)
         except Exception as e:
