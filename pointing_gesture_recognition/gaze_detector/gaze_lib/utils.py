@@ -1,6 +1,9 @@
 import numpy as np
 import mediapipe as mp
-from geometry_msgs.msg import Point
+try:
+    from geometry_msgs.msg import Point
+except ImportError:
+    pass
 
     
 def set_point(point, keypoint):
@@ -82,8 +85,8 @@ def get_eye_direction(keypoints_cc, head_coordinate_system):
         print("regarde vers le bas")
     #dy = 1 + dy_right/dy_left
     dy = 0
-    print("dx: %s", dx)
-    print("dy: %s", dy)
+    print("dx:", dx)
+    print("dy:", dy)
     return dx*3, dy*2
 
     

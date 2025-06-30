@@ -64,7 +64,9 @@ class KalmanWrapper:
 
     def update(self, z_measured):
         self.kf.predict()
+        print("Kalman filter prediction step completed.")
         self.kf.update(z_measured)
+        print("Kalman filter update step completed with measurement:", z_measured)
         z_filtered = self.kf.x[:3].flatten()
         if np.linalg.norm(z_filtered) == 0:
             z_filtered = np.array([1.0, 0.0, 0.0])

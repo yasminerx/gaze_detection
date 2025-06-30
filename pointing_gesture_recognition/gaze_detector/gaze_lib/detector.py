@@ -84,16 +84,18 @@ class GazeDetector:
  
     def update_head_coordinate_system(self, gaze_keypoints_cc):
         head_coordinate_system = get_head_coordinate_system(gaze_keypoints_cc)
-        print("head_coordinate_system", head_coordinate_system)
         # update z with the kalman filter
-        self.kw, head_coordinate_system[2] = self.kw.update(head_coordinate_system[2])
-        print("head_coordinate_system", head_coordinate_system)
+        try :
+            kf, head_coordinate_system[2] = self.kw.update(head_coordinate_system[2])
+            self.kw.kf = kf
+        except Exception as e:
+            print(f"Error updating head coordinate system with Kalman filter: {e}")
+            pass
         return head_coordinate_system
 
 
     def detect_eye_gaze(self, rgb, depth, t):
         print("detect eye gaze started")
-
         try:
             depth.encoding = self.depth_encoding
             depth_img = CvBridge().imgmsg_to_cv2(depth, self.depth_encoding)
@@ -123,9 +125,6 @@ class GazeDetector:
 
             try:
                 head_coordinate_system = self.update_head_coordinate_system(gaze_keypoints_cc)
-                print("head_coordinate_system", head_coordinate_system)
-
-
             except Exception as e:
                 print(f"Error updating head coordinate system: {e}")
             dx, dy = get_eye_direction(gaze_keypoints_cc, head_coordinate_system)
