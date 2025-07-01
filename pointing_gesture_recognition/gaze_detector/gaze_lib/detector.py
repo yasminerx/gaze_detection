@@ -3,6 +3,7 @@ import numpy as np
 import mediapipe as mp
 from .utils import *
 from .filters import OneEuroFilter, KalmanWrapper
+import matplotlib.pyplot as plt
 
 
 
@@ -98,6 +99,10 @@ class GazeDetector:
 
         # is there a face in the imge ?
         self.eye_detected = False
+        plt.imshow(rgb_img)
+        plt.title("RGB Image")
+        plt.axis("off")
+        plt.show()
 
         # main face detection 
         face_results = self.face.process(rgb_img)
