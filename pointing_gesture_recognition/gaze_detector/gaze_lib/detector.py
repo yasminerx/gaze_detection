@@ -33,6 +33,10 @@ class GazeDetector:
         self.face = self.mp_face_mesh.FaceMesh(static_image_mode=static_image_mode, 
         refine_landmarks=True,
         max_num_faces=1)
+        # setup pose detection model
+        self.mp_pose = mp.solutions.pose
+        min_detection_confidence = 0.5  # can be set as rosparam
+        self.pose = self.mp_pose.Pose(static_image_mode=static_image_mode, min_detection_confidence=min_detection_confidence, model_complexity=model_complexity)
         self.eye_detected = False
 
         
@@ -99,10 +103,23 @@ class GazeDetector:
 
         # is there a face in the imge ?
         self.eye_detected = False
-        plt.imshow(rgb_img)
-        plt.title("RGB Image")
-        plt.axis("off")
-        plt.show()
+
+        # # show the rgb image
+        # plt.imshow(rgb_img)
+        # plt.title("RGB Image")
+        # plt.axis("off")
+        # plt.show()
+
+        # check if the body is detected 
+        try :
+            body_results = self.pose.process(rgb_img)
+            if body_results.pose_landmarks is not None:
+                print("Body detected in the image.")
+            else:
+                print("No body detected in the image.")
+        except Exception as e:
+            print(f"Error processing body landmarks: {e}")
+
 
         # main face detection 
         face_results = self.face.process(rgb_img)
