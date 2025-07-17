@@ -149,6 +149,7 @@ class GazeDetector:
         self.x_vector.color.g = 0.0
         self.x_vector.color.b = 0.0
         self.x_vector.color.a = 1.0
+        self.x_vector.pose.orientation.w = 1.0  # Quaternion identité
 
         self.y_vector = Marker()
         self.y_vector.header.frame_id = self.frame_id
@@ -164,6 +165,7 @@ class GazeDetector:
         self.y_vector.color.g = 1.0
         self.y_vector.color.b = 0.0
         self.y_vector.color.a = 1.0
+        self.y_vector.pose.orientation.w = 1.0  # Quaternion identité
 
         self.z_vector = Marker()
         self.z_vector.header.frame_id = self.frame_id
@@ -179,6 +181,7 @@ class GazeDetector:
         self.z_vector.color.g = 0.0
         self.z_vector.color.b = 1.0
         self.z_vector.color.a = 1.0
+        self.z_vector.pose.orientation.w = 1.0  # Quaternion identité
 
         self.gaze = Marker()
         self.gaze.header.frame_id = self.frame_id
@@ -194,6 +197,7 @@ class GazeDetector:
         self.gaze.color.g = 1.0
         self.gaze.color.b = 1.0
         self.gaze.color.a = 1.0
+        self.gaze.pose.orientation.w = 1.0  # Quaternion identité
 
         
     def get_eye_keypoints(self, face_results, rgb_image, depth_image):
