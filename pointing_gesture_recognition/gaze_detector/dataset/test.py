@@ -10,7 +10,7 @@ intrinsic = o3d.camera.PinholeCameraIntrinsic()
 intrinsic.set_intrinsics(width=512, height=424, fx=fx, fy=fy, cx=cx, cy=cy)
 
 # === Option 1: Read directly from disk ===
-video_path = "/home/yasmine/Documents/gaze_detection/pointing_gesture_recognition/gaze_detector/dataset/data/depth.avi"  # Replace with actual path
+video_path = "/home/yasmine/Documents/v4r/gaze_detection/pointing_gesture_recognition/gaze_detector/dataset/data/depth.avi"  # Replace with actual path
 reader = iio.imiter(video_path, plugin="pyav")  # or plugin="ffmpeg"
 
 # === Option 2: Read from BytesIO (if needed) ===
