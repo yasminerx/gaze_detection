@@ -4,3 +4,4 @@ pointing_gesture_recognition/rosbag/
 pointing_gesture_recognition/rosbags/
 pointing_gesture_recognition/manigaze_dataset/
 pointing_gesture_recognition/gaze_detector/venv/
+pointing_gesture_recognition/gaze_detector/gaze_lib/__pycache__/
