@@ -24,3 +24,12 @@ rosrun tf static_transform_publisher 0 0 0 0 0 0 heatilt_link head_rgbd_sensor_r
 rosrun tf static_transform_publisher 0 0 0 0 0 0 base_footprint base_link 100
 
 git reset HEAD~1 : annule le commi mais garde les modifs
+
+#pour voir les branches :
+git log --oneline --graph --all
+
+#pour avoir tous les commits distants :
+git fetch
+
+# pour fusionner origin/main dans main :
+git merge origin/main

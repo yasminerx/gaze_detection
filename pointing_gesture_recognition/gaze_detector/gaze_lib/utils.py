@@ -69,24 +69,22 @@ def get_eye_direction(keypoints_cc, head_coordinate_system):
     x_vector = head_coordinate_system[0]
     dx_right = (right_eye_center - right_eye_pupil)@ x_vector
     dx_left = (left_eye_center - left_eye_pupil)@ x_vector
-    if dx_right > 1.02 :
-        print("regarde vers la droite")
-    if dx_right < 0.99 :
-        print("regarde vers la gauche")
+    # if dx_right > 1.02 :
+    #     print("regarde vers la droite")
+    # if dx_right < 0.99 :
+    #     print("regarde vers la gauche")
     dx = 1 + dx_right/dx_left
 
     # for the dy difference
     y_vector = head_coordinate_system[1]
     dy_right = (right_eye_center - right_eye_pupil)@ y_vector
     dy_left = (left_eye_center - left_eye_pupil)@ y_vector
-    if dy_right > 1.02 :
-        print("regarde vers le haut")
-    if dy_right < 0.99 :
-        print("regarde vers le bas")
+    # if dy_right > 1.02 :
+    #     print("regarde vers le haut")
+    # if dy_right < 0.99 :
+    #     print("regarde vers le bas")
     #dy = 1 + dy_right/dy_left
     dy = 0
-    print("dx:", dx)
-    print("dy:", dy)
     return dx*3, dy*2
 
     

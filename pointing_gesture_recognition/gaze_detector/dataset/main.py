@@ -41,6 +41,14 @@ for i, (rgb, depth_frame) in enumerate(zip(rgb_reader, depth_reader)):
     print(f"Timestamp: {timestamp:.3f} seconds")
 
     try :
+        # img = cv2.imread("/home/yasmine/Documents/gaze_detection/pointing_gesture_recognition/gaze_detector/test_image.jpg", cv2.IMREAD_COLOR)
+        # rgb = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+        h, w, _ = rgb.shape
+        zoom_factor = 2  # 2x zoom par exemple
+        center = (w // 2, h // 2)
+        cropped = rgb[center[1] - h//(2*zoom_factor) : center[1] + h//(2*zoom_factor),
+                            center[0] - w//(2*zoom_factor) : center[0] + w//(2*zoom_factor)]
+        rgb = cv2.resize(cropped, (w, h))
         gaze_keypoints, eye_detected, head_coord_sys, dx, dy = detector.detect_eye_gaze(rgb, depth_m, timestamp)
 
     except Exception as e:

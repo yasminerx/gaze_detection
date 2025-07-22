@@ -10,6 +10,7 @@ from object_detector_msgs.srv import estimate_eye_position
 from object_detector_msgs.srv import estimate_eye_positionResponse
 
 from gaze_lib.detector import GazeDetector
+from gaze_lib.utils import set_point
 import numpy as np
 
 
@@ -116,6 +117,7 @@ class GazeRosNode :
         self.x_vector.color.g = 0.0
         self.x_vector.color.b = 0.0
         self.x_vector.color.a = 1.0
+        self.x_vector.pose.orientation.w = 1.0  # Quaternion identité
 
         self.y_vector = Marker()
         self.y_vector.header.frame_id = self.frame_id
@@ -131,6 +133,8 @@ class GazeRosNode :
         self.y_vector.color.g = 1.0
         self.y_vector.color.b = 0.0
         self.y_vector.color.a = 1.0
+        self.y_vector.pose.orientation.w = 1.0  # Quaternion identité
+
 
         self.z_vector = Marker()
         self.z_vector.header.frame_id = self.frame_id
@@ -146,6 +150,9 @@ class GazeRosNode :
         self.z_vector.color.g = 0.0
         self.z_vector.color.b = 1.0
         self.z_vector.color.a = 1.0
+        self.z_vector.pose.orientation.w = 1.0  # Quaternion identité
+
+
 
         self.gaze = Marker()
         self.gaze.header.frame_id = self.frame_id
@@ -161,6 +168,8 @@ class GazeRosNode :
         self.gaze.color.g = 1.0
         self.gaze.color.b = 1.0
         self.gaze.color.a = 1.0
+        self.gaze.pose.orientation.w = 1.0  # Quaternion identité
+        #initialize the markers
 
 
     def update_markers(self, dx, dy, head_coordinate_system, gaze_keypoints_cc):
@@ -193,6 +202,7 @@ class GazeRosNode :
         self.pub_x_vector.publish(self.x_vector)
         self.pub_y_vector.publish(self.y_vector)
         self.pub_z_vector.publish(self.z_vector)
+        print("markers updated")
 
     def update_eye_markers(self, gaze_keypoints_cc, eye_detected):
         if eye_detected['right']:
@@ -260,10 +270,20 @@ class GazeRosNode :
             detected_gaze_keypoints_cc, eye_detected, head_coordinate_system, dx, dy = self.detector.detect_eye_gaze(rgb_img, depth_img, rospy.Time.now().to_sec())
             self.update_markers(dx, dy, head_coordinate_system, detected_gaze_keypoints_cc)
             self.update_eye_markers(detected_gaze_keypoints_cc, eye_detected)
+            res = estimate_eye_positionResponse()
+            right_eye_point = Point()
+            set_point(right_eye_point, detected_gaze_keypoints_cc['right'])
+            left_eye_point = Point()
+            set_point(left_eye_point, detected_gaze_keypoints_cc['left'])
+            res.right_eye = right_eye_point
+            res.left_eye = left_eye_point
+            return res
+
         except Exception as e:
             rospy.logerr(f"Error updating markers: {e}")
 
-
+        return None
+    
 if __name__ == "__main__":
     try:
         rospy.init_node('gazenodedetector')
