@@ -20,7 +20,7 @@ export CONFIG=params_realsense.yaml
 rosparam load /code/${CONFIG} /pose_estimator
 
 
-rosrun tf static_transform_publisher 0 0 0 0 0 0 heatilt_link head_rgbd_sensor_rgb_frame 100
+rosrun tf static_transform_publisher 0 0 0 0 0 0 head_tilt_link head_rgbd_sensor_rgb_frame 100
 rosrun tf static_transform_publisher 0 0 0 0 0 0 base_footprint base_link 100
 
 git reset HEAD~1 : annule le commi mais garde les modifs
@@ -33,3 +33,8 @@ git fetch
 
 # pour fusionner origin/main dans main :
 git merge origin/main
+
+rosrun tf tf_echo map head_rgbd_sensor_rgb_frame
+
+rosbag record /hsrb/head_rgbd_sensor/rgb/image_rect_color /hsrb/head_rgbd_sensor/depth_registered/image_rect_raw /found_markers_array /gaze --output-name=test_run_0722.bag -b 2048 --lz4
+

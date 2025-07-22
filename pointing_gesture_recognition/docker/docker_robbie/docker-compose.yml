@@ -11,7 +11,7 @@ services:
     network_mode: "host"
     runtime: "nvidia"
     volumes:
-      - /home/yasmine/Documents/v4r_yasmine/gaze_detection/pointing_gesture_recognition:/root/code/
+      - /home/yasmine/Documents/v4r/gaze_detection/pointing_gesture_recognition:/root/code/
       - /dev/bus/usb:/dev/bus/usb
       - /tmp/.X11-unix:/tmp/.X11-unix:rw
     environment:
@@ -19,6 +19,6 @@ services:
       - ROS_IP=10.0.0.238
       - DISPLAY
       - QT_X11_NO_MITSHM=1
-    command: bash -c "source code/start_sasha.sh; rviz"
+    command: bash
     stdin_open: true
     tty: true 
