@@ -38,3 +38,5 @@ rosrun tf tf_echo map head_rgbd_sensor_rgb_frame
 
 rosbag record /hsrb/head_rgbd_sensor/rgb/image_rect_color /hsrb/head_rgbd_sensor/depth_registered/image_rect_raw /found_markers_array /gaze --output-name=test_run_0722.bag -b 2048 --lz4
 
+# sur mon pc qd rviz fonctionne pas : 
+LIBGL_ALWAYS_SOFTWARE=1 rviz

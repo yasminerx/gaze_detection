@@ -21,8 +21,8 @@ def test_mediapipe_face_detection():
     if results.multi_face_landmarks:
         for face_landmarks in results.multi_face_landmarks:
             print("face landmarks detected")
-            # image = draw_full_face_mesh(image, face_landmarks)
-            image = draw_pupil(image, face_landmarks)
+            image = draw_full_face_mesh(image, face_landmarks)
+            #image = draw_pupil(image, face_landmarks)
             
             cv2.imshow("face mesh", image)
             cv2.waitKey(0)
