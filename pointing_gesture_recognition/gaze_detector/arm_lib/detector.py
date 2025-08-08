@@ -2,7 +2,6 @@ import cv2
 import numpy as np
 import mediapipe as mp
 from .utils import *
-from .filters import OneEuroFilter, KalmanWrapper
 import matplotlib.pyplot as plt
 
 
