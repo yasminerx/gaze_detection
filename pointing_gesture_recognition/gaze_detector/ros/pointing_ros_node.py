@@ -8,7 +8,7 @@ from object_detector_msgs.srv import estimate_pointing_gesture
 from object_detector_msgs.srv import estimate_pointing_gestureResponse
 
 from arm_lib.detector import PointingDetector
-from arm_lib.utils import set_point
+from arm_lib.utils import set_point, get_arm_angle, set_vector_length
 import numpy as np
 
 
@@ -123,10 +123,15 @@ class PointingRosNode :
         print("markers updated")
 
     def update_arm_markers(self, arm_keypoints_cc, arm_detected):
+        print("updating arm markers")
         arm_angle = 0.0
         if arm_detected['right_shoulder'] and arm_detected['right_elbow'] and arm_detected['right_wrist']:
-            arm_angle = get_arm_angle(arm_keypoints_cc[0], arm_keypoints_cc[1], arm_keypoints_cc[2])
-            
+            print("full arm detected")
+            try :
+                arm_angle = get_arm_angle(arm_keypoints_cc['right_shoulder'], arm_keypoints_cc['right_elbow'], arm_keypoints_cc['right_wrist'])
+            except Exception as e:
+                print("Error calculating arm angle:", e)
+
             # Set the is_pointing indicator to True if the angle is larger than the threshold
             # Show the published arrows only if currently pointing
             if arm_angle >= self.arm_angle_thresh:
@@ -145,22 +150,27 @@ class PointingRosNode :
             arrow_shoulder_endpoint = arm_keypoints_cc['right_wrist']
             arrow_elbow_startpoint = arm_keypoints_cc['right_elbow']
             arrow_elbow_endpoint = arm_keypoints_cc['right_wrist']
-
+ 
+            print("length an dpoints ok")
             # If the desired arrow length is not zero then scale the vector accordingly
             if arrow_length_m != 0:
-                arrow_shoulder_startpoint, arrow_shoulder_endpoint = set_vector_length(arm_keypoints_cc[0], arm_keypoints_cc[2], arrow_length_m)
-                arrow_elbow_startpoint, arrow_elbow_endpoint = set_vector_length(arm_keypoints_cc[1], arm_keypoints_cc[2], arrow_length_m)
+                arrow_shoulder_startpoint, arrow_shoulder_endpoint = set_vector_length(arm_keypoints_cc['right_shoulder'], arm_keypoints_cc['right_elbow'], arrow_length_m)
+                arrow_elbow_startpoint, arrow_elbow_endpoint = set_vector_length(arm_keypoints_cc['right_elbow'], arm_keypoints_cc['right_wrist'], arrow_length_m)
+
 
             # Set the points of the arrows for publishing
             set_point(self.arrow_shoulder_start, arrow_shoulder_startpoint)
             set_point(self.arrow_shoulder_end, arrow_shoulder_endpoint)
             set_point(self.arrow_shoulder_end, arrow_elbow_startpoint)
             set_point(self.arrow_elbow_end, arrow_elbow_endpoint)
+            
+            print('set points ok')
 
             # Set the points for the arm line marker
             self.lines.points = []
-            for keypoint in arm_keypoints_cc:
+            for item, keypoint in arm_keypoints_cc.items():
                 point = Point()
+                print("set point", keypoint)
                 set_point(point, keypoint)
                 self.lines.points.append(point)
 
@@ -174,12 +184,12 @@ class PointingRosNode :
             self.pub_is_pointing.publish(is_pointing)
 
             shoulder_point = Point()
-            set_point(shoulder_point, arm_keypoints_cc[0])
+            set_point(shoulder_point, arm_keypoints_cc['right_shoulder'])
             elbow_point = Point()
-            set_point(elbow_point, arm_keypoints_cc[1])
+            set_point(elbow_point, arm_keypoints_cc['right_elbow'])
             wrist_point = Point()
-            set_point(wrist_point, arm_keypoints_cc[2])
-
+            set_point(wrist_point, arm_keypoints_cc['right_wrist'])
+            print('res ok')
             res = estimate_pointing_gestureResponse()
             res.shoulder = shoulder_point
             res.elbow = elbow_point

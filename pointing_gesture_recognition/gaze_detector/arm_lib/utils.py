@@ -57,7 +57,7 @@ def pixel_to_camera_coordinates(keypoint_pc, camera_info):
 def get_arm_angle(shoulder, elbow, wrist):
     # Return the angle between vectors shoulder-elbow and elbow-wrist
     # Angle can be used as a measure whether a person is pointing or not
-
+    print("get arm angle")
     shoulder = np.array(shoulder)
     elbow = np.array(elbow)
     wrist = np.array(wrist)

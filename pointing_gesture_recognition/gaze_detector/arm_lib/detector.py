@@ -47,25 +47,24 @@ class PointingDetector:
         }
 
         if pose_results.pose_landmarks:
-            for pose_landmarks in pose_results.multi_pose_landmarks:
-                # get the x, y coordinates of the arm keypoints
-                for arm_joint, i in arm_indices.items():
-                    keypoint = pose_results.pose_landmarks.landmark[self.mp_pose.PoseLandmark(i).value]
-                    x = int(keypoint.x * image_width)
-                    y = int(keypoint.y * image_height)
+            # get the x, y coordinates of the arm keypoints
+            for arm_joint, i in arm_indices.items():
+                keypoint = pose_results.pose_landmarks.landmark[self.mp_pose.PoseLandmark(i).value]
+                x = int(keypoint.x * image_width)
+                y = int(keypoint.y * image_height)
 
-                    arm_keypoint = get_depth_coordinates(x, y, depth_image)
-                    arm_keypoints[arm_joint] = arm_keypoint
-                    arm_detected[arm_joint] = True
+                arm_keypoint = get_depth_coordinates(x, y, depth_image)
+                arm_keypoints[arm_joint] = arm_keypoint
+                arm_detected[arm_joint] = True
 
         # check if entire arm is detected
         if (arm_keypoints["right_shoulder"] is not None and 
             arm_keypoints["right_elbow"] is not None and 
             arm_keypoints["right_wrist"] is not None):
-            self.is_pointing = True
+            self.arm_detected = True
             print("Right arm keypoints detected in the image.")
         else:
-            self.is_pointing = False
+            self.arm_detected = False
             print("No right arm detected in the image.")
             
         # no need to compensate the depth value (?? to be checked)
