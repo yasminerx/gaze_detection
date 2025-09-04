@@ -38,5 +38,23 @@ rosrun tf tf_echo map head_rgbd_sensor_rgb_frame
 
 rosbag record /hsrb/head_rgbd_sensor/rgb/image_rect_color /hsrb/head_rgbd_sensor/depth_registered/image_rect_raw /found_markers_array /gaze --output-name=test_run_0722.bag -b 2048 --lz4
 
+
+rosbag record -O pointing_gaze_frame --split --size=2048 \
+/pointing/arm_joints \
+/pointing/x_vector \
+/pointing/y_vector \
+/pointing/z_vector \
+/pointing/left_eye \
+/pointing/right_eye \
+/pointing/elbow_to_wrist \
+/pointing/gaze \
+/pointing/filtered_gaze \
+/camera/color/image_raw \
+/camera/color/camera_info \
+/camera/aligned_depth_to_color/image_raw \
+/camera/aligned_depth_to_color/camera_info \
+/tf \
+/tf_static
+
 # sur mon pc qd rviz fonctionne pas : 
 LIBGL_ALWAYS_SOFTWARE=1 rviz

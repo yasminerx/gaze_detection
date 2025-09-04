@@ -73,4 +73,4 @@ class KalmanWrapper:
             print("Warning! Kalman filter output is zero, setting to default [1.0, 0.0, 0.0]")
         else:
             z_filtered /= np.linalg.norm(z_filtered)
-        return self.kf, z_filtered
+        return z_filtered

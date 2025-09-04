@@ -107,3 +107,8 @@ These topics can be visualized in RViz for monitoring and debugging purposes.
 - [RViz Marker Publishing Example](https://answers.ros.org/question/373802/minimal-working-example-for-rviz-marker-publishing/)
 - [Interactive Matplotlib Figures](https://matplotlib.org/stable/users/explain/figure/interactive.html)
 - [Stack Overflow - Subplot Argument](https://stackoverflow.com/questions/3584805/what-does-the-argument-mean-in-fig-add-subplot111)
+
+
+avec la camera :
+lancer le docker realsense_ros_docker pour la camera
+lancer le docker docker_camera pour pouvoir lancer le code etc...

@@ -11,6 +11,7 @@ from object_detector_msgs.srv import estimate_eye_positionResponse
 
 from gaze_lib.detector import GazeDetector
 from gaze_lib.utils import set_point
+from gaze_lib.filters import OneEuroFilter, KalmanWrapper
 import numpy as np
 
 
@@ -28,6 +29,7 @@ class GazeRosNode :
         t0 = rospy.Time.now().to_sec()
         self.detector = GazeDetector(t0, self.camera_info, self.depth_encoding, self.depth_scale)
 
+
         # ros services :
         self.service = rospy.Service("/gaze_callback", estimate_eye_position, self.gaze_callback)
         rospy.loginfo("Service /gaze_callback started")
@@ -39,6 +41,7 @@ class GazeRosNode :
         self.pub_y_vector = rospy.Publisher("/pointing/y_vector", Marker, queue_size=10)
         self.pub_z_vector = rospy.Publisher("/pointing/z_vector", Marker, queue_size=10)
         self.pub_gaze = rospy.Publisher("/pointing/gaze", Marker, queue_size=10)
+        self.pub_filtered_gaze = rospy.Publisher("/pointing/filtered_gaze", Marker, queue_size=10)
 
         scale = 0.01
         self.arrow_length = 0.5
@@ -171,9 +174,40 @@ class GazeRosNode :
         self.gaze.pose.orientation.w = 1.0  # Quaternion identité
         #initialize the markers
 
+        #to filter the gaze :
+        self.kw = KalmanWrapper()
+        self.dx_filter = OneEuroFilter(0.0, 0.0, min_cutoff=1.0, beta=0.007)
+        self.dy_filter = OneEuroFilter(0.0, 0.0, 0.0, min_cutoff=1.0, beta=0.007)
+        self.filtered_gaze = Marker()
+        self.filtered_gaze.header.frame_id = self.frame_id
+        self.filtered_gaze.header.stamp = rospy.Time.now()
+        self.filtered_gaze.ns = "marker_gaze"
+        self.filtered_gaze.id = 7
+        self.filtered_gaze.type = Marker.ARROW
+        self.filtered_gaze.action = Marker.ADD
+        self.filtered_gaze.scale.x = 0.01
+        self.filtered_gaze.scale.y = 0.02
+        self.filtered_gaze.scale.z = 0.02
+        self.filtered_gaze.color.r = 1.0
+        self.filtered_gaze.color.g = 0.0
+        self.filtered_gaze.color.b = 1.0
+        self.filtered_gaze.color.a = 1.0
+        self.filtered_gaze.pose.orientation.w = 1.0  # Quaternion identité
+
+        
+
 
     def update_markers(self, dx, dy, head_coordinate_system, gaze_keypoints_cc):
+        #non filtered gaze :
         gaze_vector = head_coordinate_system[0]*dx + head_coordinate_system[1]*dy + head_coordinate_system[2]
+
+        #filtered gaze :
+        t0 = rospy.Time.now().to_sec()
+        z_filtered = self.kw.update(head_coordinate_system[2])
+        dx = self.dx_filter(t0, dx)
+        dy = self.dy_filter(t0, dy)
+        filtered_gaze_vector = head_coordinate_system[0]*dx + head_coordinate_system[1]*dy + z_filtered
+
         origin = gaze_keypoints_cc['nose_bridge']
         end_gaze = origin + gaze_vector * self.arrow_length
         point_origin = Point(origin[0], origin[1], origin[2])
@@ -182,6 +216,13 @@ class GazeRosNode :
         self.gaze.action = Marker.ADD
         self.gaze.header.stamp = rospy.Time.now()
         self.pub_gaze.publish(self.gaze)
+
+        end_gaze_filter = origin + filtered_gaze_vector * self.arrow_length
+        point_end_filtered_gaze = Point(end_gaze_filter[0], end_gaze_filter[1], end_gaze_filter[2])
+        self.filtered_gaze.points = [point_origin, point_end_filtered_gaze]
+        self.filtered_gaze.action = Marker.ADD
+        self.filtered_gaze.header.stamp = rospy.Time.now()
+        self.pub_filtered_gaze.publish(self.filtered_gaze)
 
         end_x = origin + head_coordinate_system[0] * self.arrow_length
         end_y = origin + head_coordinate_system[1] * self.arrow_length
@@ -203,6 +244,7 @@ class GazeRosNode :
         self.pub_y_vector.publish(self.y_vector)
         self.pub_z_vector.publish(self.z_vector)
         print("markers updated")
+
 
     def update_eye_markers(self, gaze_keypoints_cc, eye_detected):
         if eye_detected['right']:
