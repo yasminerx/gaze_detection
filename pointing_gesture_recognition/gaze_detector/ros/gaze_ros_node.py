@@ -41,7 +41,7 @@ class GazeRosNode :
         self.pub_y_vector = rospy.Publisher("/pointing/y_vector", Marker, queue_size=10)
         self.pub_z_vector = rospy.Publisher("/pointing/z_vector", Marker, queue_size=10)
         self.pub_gaze = rospy.Publisher("/pointing/gaze", Marker, queue_size=10)
-        self.pub_filtered_gaze = rospy.Publisher("/pointing/filtered_gaze", Marker, queue_size=10)
+        self.pub_filtered_gaze = rospy.Publisher("/pointing/filtered_gaze_2", Marker, queue_size=10)
 
         scale = 0.01
         self.arrow_length = 0.5
@@ -190,7 +190,7 @@ class GazeRosNode :
         self.filtered_gaze.scale.z = 0.02
         self.filtered_gaze.color.r = 1.0
         self.filtered_gaze.color.g = 0.0
-        self.filtered_gaze.color.b = 1.0
+        self.filtered_gaze.color.b = 0.0
         self.filtered_gaze.color.a = 1.0
         self.filtered_gaze.pose.orientation.w = 1.0  # Quaternion identité
 

@@ -1,0 +1,204 @@
+\definecolor{lightgreen}{RGB}{146,208,80}
+\definecolor{lightred}{RGB}{255,102,102}
+\definecolor{lightorange}{RGB}{255,178,102}
+\definecolor{lightblue}{RGB}{142,169,219}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section*{Introduction}
+\addcontentsline{toc}{section}{Introduction}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Context}
+\subsection{V4R and its research focus}
+
+I did my internship at TU Wien (Technische Universität Wien), a technological university located in Vienna, Austria. I worked with the Vision for Robotics (V4R) research group, which is part of the ACIN institute (Automation and Control Institute). The internship began in early May and ended early September.
+
+The V4R research group focuses on developing computer vision methods that allow robots to understand their environment, perceive objects, and act autonomously in everyday scenarios. The robots can later be used in manufacturing or household settings, for example. They develop robotic perception to achieve real-world interactions, like object modeling and manipulation, or human-robot interactions using semantic scene understanding. They can also apply it to safe navigation or the manipulation of known objects, as well as unknown ones.
+
+
+There are around 15 people working in the lab, including researchers, PhD students, and a few master's students working on their thesis. The team is very international, with members from various countries and backgrounds, and the working language is mainly English, which  (????)
+
+
+I worked on-site at the lab most of the time, even though it is possible to work remotely, thanks to GitHub and other collaborative tools. I shared an office with two other researchers, although they were'nt always present, which gave me a lot of autonomy. However, I could always reach out for help or feedback from my two direct supervisors, Peter Hönig and Matthias Hirschmanner.
+
+Peter is involved in the MANiBOT project \cite{manibot}, which aims to develop bimanual mobile robots capable of performing complex manipulation tasks in environments such as airports or supermarkets. His work focuses on cognitive functions and physical intelligence in robotics. Matthias, on the other hand, works in robotics, but more from a social and healthcare perspective. His project is called Caring Robots \cite{caring}, and it explores how robotic technology can be designed to support rather than replace human interaction. This is why he collaborates with both caregivers and people receiving care.
+
+The lab has access to various robotic equipment, including Sasha, a human support robot (HSR in short), used for manipulation tasks, and another platform currently being built by Matthias. The team also publishes papers regularly, and attends major international conferences, so they are quite involved in the academic community.
+
+I chose this lab for different reasons. First, on an academic level, the V4R group has a strong reputation in both robotics and computer vision. I wanted to challenge myself by discovering a domain I had less experience in, because even though I had worked on several robotics projects, they were mainly focused on control and navigation. I had very limited experience in vision-based approaches and applications of AI in general. Moreover, I was really interested in Vienna as a city, so it also had an influence on my choice of internship.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Project selection and objectives}
+
+Unlike most of my classmates, I arrived without any predefined subject. At first, I found it a bit intimidating because I didn't have a clear idea of what I was going to do or work on. I spent the first week of my internship discovering the lab and their different research areas. To help me do so, I was given a list of older master thesis subjects. They included different concepts and methods of vision analysis such as vision transformers (ViTs), that work by dividing images into patches and use self-attention to capture spatial relationships between the patches. I also discovered semantic flow, which is used a lot in the lab. It finds pixel correspondences between two images that share semantically similar content. It's really useful to estimate the changes in view points for example. It's used for object pose estimation, which is the process of determining the position and orientation of an object in space, using usually 3D data from a sensor or from an image.
+
+I was really interested in projects involving semantic flow, however, given the fact that I had no prior experience in computer vision, it wasn't really realistic to start with such an advanced topic given my level. The following week, we had a team meeting during which I introduced myself and my background and past projects. The team then gave me ideas of subjects I could work on, and I was happily surprised by how open they were to letting me choose a subject I was interested in. One suggestion was a navigation subject, however I was already familiar with this kind of topic and wanted to take the opportunity to work on something new that could combine both robotics and computer vision. From all of their proposal, they suggested implementing a gaze detection module, and that's the subject I felt most interested in. Matthias had already started developping a pointing detector, so I could be inspired by the work he had already done and apply similar methods to gaze detection. The goal would be to combine gaze direction with head rotation to get the 3d gaze direction. This could then be integrated into Matthias work with his healthcare robot for example, to improve human-robot interaction by allowing the robot to understand where a user is looking.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newpage
+\section{Presentation of the subject}
+The goal of my internship is to develop a gaze tracking algorithm, to verify its accuracy and to implement it in the existing detecting and grabbing pipeline so that it can be used in more complex robotics systems over time. The pipeline involves detecting objects, estimating their positions, and enabling the robot to grasp them or to interact with them.
+The main goal would be to detect with accuracy where the user is looking, so that by applying object detection we could for example determine what object the user intends to interact with, like finding which one the robot has to grab for example. 
+The objective is to use the camera already installed on the robot, so in my case, as I am using Sasha (the HSR robot), it is an \gls{rgbd}. The sensor provides both the color images (RGB) and the depth images, which helps localizing objects in 3D space. The camera is mounted on the robot's head, which can turn to almost 360°. 
+
+To implement the gaze tracking algorithm, I chose to use MediaPipe Solutions, as it was used for the pointing detection, so I have a pre-existing idea of how to make it work. It is an open source project developed by Google, and it provides libraries and tools, such as pre-trained and ready-to-run models which I found more interesting and useful in my case. I will present it in more details in the next section.
+
+Another idea we had for the next step of the project was to, once the gaze detection would work, combine both gaze and pointing detection to make a more complete detection algorithm that would be able to switch between methods of detection. For example, gaze tracking would be preferred when the user is further away, and pointing detection would be used when the whole body would be detected. It would make a more natural and useful human-robot interface.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newpage
+\section{Tools and methods}
+\subsection{HSR robot (Sasha)}
+
+Sasha is a "Human Support Robot", made by Toyota. It was designed for assisting people in daily-life environments. It has been at V4R since 2019, and it has been used for research in image processing and object recognition, and they use Sasha to test their algorithms, to grasp objects and to move around the lab. 
+
+Sasha is approximately 1 meter tall, and was built on an omnidirectional mobile base. To do so safely, it's equipped with different sensors, including a laser measuring range sensor and a magnetic sensor for stopping.
+It has a single arm equipped with a mutli-fingered gripper, with  suction pad, a hand force sensor and a hand camera, which makes it capable of grasping and manipulating light objects. 
+
+\begin{figure}[htbp]
+  \centering
+  \begin{minipage}{0.48\textwidth}
+    \centering
+    \includegraphics[width=4cm]{folder/imgs/hsr.png}
+    \caption{Toyota HSR used in the V4R lab.}
+    \label{fig:hsr}
+  \end{minipage}
+  \hfill
+  \begin{minipage}{0.48\textwidth}
+  \setlength{\parindent}{15pt}
+    Moreover, its head can rotate to almost 360°, and different sensors - and RGB-D sensor, stereo and wide angle cameras and a microphone - are mounted on it. Lastly, it has approximately 2 hours of battery autonomy under usual operating conditions, and a built-in display screen on the head.
+    
+    The joints are all equipped with absolute-type joint angle encoders, which make the movements more precise and easily controlled. In total there are 11 controllable joints, each associated to its own coordinate system.
+  \end{minipage}
+\end{figure}    
+
+Although it is possible to use a simulator based on Gazebo, I didn't need to use it for my project and I was able to start experimenting directly with Sasha, using a ROS2 environment, detailed in the following section.
+
+To interact with Sasha, it is also possible to use a web interface via its IP address. It provides a live overview of the camera feed as well as a control panel to directly command Sasha's movements. It's possible to control the head rotation angles, make the robot move in every direction, and to adjust the height of its head. It was very useful at the beginning to test Sasha's abilities and to determine what was possible without having to write code directly.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.5\linewidth]{folder/imgs/website.png}
+    \caption{Web interface to control Sasha's movements}
+    \label{fig:web}
+\end{figure}
+
+\subsection{MediaPipe Solutions for gaze tracking}
+
+MediaPipe Solutions is an ensemble of libraries developed by Google. It is part of the MediaPipe open source project, and all the code is available on GitHub [add link]. It provides pre-trained models for a variety of solutions. For example, it is used for generative AI tasks such as image generation or function calling as well as vision tasks, which is what interested me for my project. It provides a wide range of models including image classification and segmentation, gesture recognition, face tracking, object detection, and more. 
+
+All the models are accompanied by code examples for Android, Python an Web applications. I used Python for the entirety of my project, as it was compatible with ROS2.
+
+I used for the most part the face landmark detection. It is composed of three machine learning models :
+- a face detection model, which detects the presence of faces
+- a face mesh model , which adds a complete 3D mapping of the face
+- a blendshape prediction model, which is used for recognizing face expressions
+
+These models can work both on single images and continuous stream of images, which was my case. This feature is particularly important for real-time applications like gaze-tracking. 
+
+I used the face mash model, which gives as an output the following mesh model :
+
+\begin{figure}[h!]
+  \centering
+  \begin{minipage}{0.48\textwidth}
+    \centering
+    \includegraphics[width=6cm]{folder/imgs/mesh_map.jpg}
+    \caption{Mesh model \\ of the face with all the landmarks}
+    \label{fig:mesh}
+  \end{minipage}
+  \centering
+  \begin{minipage}{0.48\textwidth}
+    \centering
+    \includegraphics[width=9cm]{folder/imgs/face_mesh.png}
+    \caption{Mesh model applied on the detected face}
+    \label{fig:mesh_applied}
+  \end{minipage}
+\end{figure}    
+
+
+I chose to use MediaPipe because it was already the model used by Matthias for his pointing gesture recognition algorithm. He gave me his initial code, so I could get familiar with how the module worked and get inspired for the gaze tracking pipeline. Moreover, MediaPipe, as opposed to other face recognition models, also provides iris tracking estimation. That was the most important decision point, because the face tracking on its own could only give me the head direction and not the gaze in itself.
+I used MediaPipe Iris [add link], which is built on the MediaPipe Face mesh model, but adding other landmarks such as the iris, the pupil and the eye contours. The model also determines the metric distance between the model and the camera with a relative error of less than 10\%, which is a feature that I didn't used for my project as it wasn't necessary. 
+
+Here is an example of the Iris detection model on the previous picture :
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth]{folder/imgs/iris_detected_zoom.png}
+    \caption{Caption}
+    \label{fig:iris}
+\end{figure}
+
+
+\subsection{Development environment}
+
+The first few weeks, I worked from my own laptop, and Peter gave me an RGBD portable camera [MODELE] to test my algorithms and to get familiar with the different environments.
+To start, I used the MediaPipe module, to understand how the face detection worked. My first trial codes are in the mediapipe folder. I coded in Python, and at first I only used single frames and videos to understand how everything worked. Once that was done, I had to use Docker to work with the camera, because Sasha runs on ROS1 and not ROS2, which is the version I currently have on my laptop. Moreover, this setup gave me more freedom and flexibility for testing, and I could switch  to another computer more easily if needed. 
+
+Once the algorithm gave me satisfying results, I started working directly with Sasha in more realistic conditions. In the office, there are two computers which are connected to the same local network as Sasha. By connecting to Sasha via SSH, I could control it and test my algorithm directly on Sasha's camera. It had already existing repositories with code from previous researchers and students, which I could adapt to my needs. For example, there were codes to put Sasha back to its neutral position, and to reset it. To make the switch easier between the different computers, I used GitHub to have access to all of my code synchronized and accessible all the time. 
+We were several people using Sasha, so we organized ourselves by using a shared Google Calendar to book time slots to say which of the two desktop computers we needed (named Robbie or Raufbold), and if we were going to use Sasha as well or not. This organization also helped me be more rigorous, especially in planning my work, because I had to make sure everything was ready on the right computer before my time slot with Sasha. It also made me stay really organized, as I often had to switch between computers.
+
+Raufbold was more practical to use, because it had a USB-C port, so I could connect the RealSense camera as well as Sasha. Moreover, I had trouble running my algorithm on Sasha from Robbie, so most of the time I used Raufbold and only used Robbie when working with saved rosbags.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newpage
+\section{Implementation}
+
+\subsection{Gaze detection algorithm}
+
+The RGBD sensor provides a pre-determined coordinate system, which is referred to as the main "camera frame" in which the depth cloud detected by the sensor is expressed. For my algorithm, I chose to create a frame in which the face would never move and would be the origin. I will refer to it as the "face frame" in this report.
+
+To compute it, I had to choose 2 approximately perpendicular vectors that I could compute directly with the facial landmakrs detected by the MediaPipe module.
+
+I chose these two vectors :
+\begin{itemize}
+    \item the horizontal direction of the head corresponds to the vector between the right eye inner corner and the left eye inner corner.
+    \item the vertical direction of the head is the vector going from the chin to middle of eyes, which is computed by finding the middle point between the inner corners of both eyes
+\end{itemize}
+
+
+I normalized both of these vectors and translated them so that their origin would be the nose bridge of the person detected. The results are shown on the figure :
+\begin{itemize}
+    \item the normalized horizontal vector is the x vector, in red
+    \item the normalized vertical vector is the y vector, in green
+\end{itemize}
+
+
+Then, I computed the cross product of these two vectors to find an estimation of the head direction in the camera frame, which is the z vector, in blue in the figure.
+
+All three of these vectors define the "face frame". Once that was done, I could then focus on gaze detection.
+
+To detect the gaze direction, the last step was to compute the direction of the gaze in regards to the neutral eye position (when the person is looking straight of them).
+
+By combining the gaze direction in the face frame and the head direction in the camera frame, I could get an accurate estimation of the gaze in the frame of the camera.
+
+
+
+
+
+
+\subsection{Testing on Sasha}
+
+\subsection{Testing with a dataset}
+
+\subsection{Pointing and gaze detection algorithm}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newpage
+\section{Perspectives and future work}
+progress made, improving robustness, hypothetical deployment in real scenarios (mathhias' robot
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\clearpage
+\section{Conclusion}
+summary of my work
+what i learned technically and personally
+my lab experience and working in research
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+

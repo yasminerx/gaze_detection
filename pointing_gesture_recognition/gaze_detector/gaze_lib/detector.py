@@ -19,8 +19,8 @@ class GazeDetector:
         self.kw = KalmanWrapper()
         # min_cutoff : sensibilité aux changements rapides (haut = moins de lissage)
         # beta : réactivité aux changements rapides (haut = plus de variations acceptées)
-        self.dx_filter = OneEuroFilter(t0, 0.0, min_cutoff=1.0, beta=0.007)
-        self.dy_filter = OneEuroFilter(t0, 0.0, min_cutoff=1.0, beta=0.007)
+        self.dx_filter = OneEuroFilter(t0, 0.0, min_cutoff=5, beta=0.008)
+        self.dy_filter = OneEuroFilter(t0, 0.0, min_cutoff=5, beta=0.008)
 
         # Pose detection model complexity (0, 1, 2) can be set as rosparam
         model_complexity = model_complexity

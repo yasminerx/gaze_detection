@@ -59,10 +59,10 @@ def get_eye_direction(keypoints_cc, head_coordinate_system):
     left_eye_center = np.array(keypoints_cc["left_eye_center"])
     right_eye_pupil = np.array(keypoints_cc["right"])
     left_eye_pupil = np.array(keypoints_cc["left"])
-    # upper_right = np.array(keypoints_cc["upper_right"])
-    # upper_left = np.array(keypoints_cc["upper_left"])
-    # lower_right = np.array(keypoints_cc["lower_right"])
-    # lower_left = np.array(keypoints_cc["lower_left"])
+    upper_right = np.array(keypoints_cc["upper_right"])
+    upper_left = np.array(keypoints_cc["upper_left"])
+    lower_right = np.array(keypoints_cc["lower_right"])
+    lower_left = np.array(keypoints_cc["lower_left"])
 
     # eye direction vector
     # for the dx difference
@@ -84,8 +84,8 @@ def get_eye_direction(keypoints_cc, head_coordinate_system):
     # if dy_right < 0.99 :
     #     print("regarde vers le bas")
     #dy = 1 + dy_right/dy_left
-    dy = 0
-    return dx*3, dy*2
+    dy = (dy_right + dy_left)/2
+    return dx*34, dy*3
 
     
 

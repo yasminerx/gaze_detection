@@ -9,3 +9,4 @@ __pycache__/
 
 pointing_gesture_recognition/gaze_detector/gaze_lib/__pycache__/detector.cpython-38.pyc
 pointing_gesture_recognition/gaze_detector/ros/__pycache__/gaze_ros_node.cpython-38.pyc
+rapport/
