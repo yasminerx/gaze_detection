@@ -6,7 +6,8 @@ cd pointing_gesture_recognition
 ```
 
 This repository contains a ROS node that processes depth and RGB image streams to detect arm keypoints as well as gaze direction and publishes pointing the correspondings arrows. The published topics can be visualized in RViz.
-This implementation is based on the work of Matthias Grabners Robot Vision project "Show me what to pick".
+This implementation is based on the work of Matthias Hirschmanner "Show me what to pick" : https://github.com/v4r-tuwien/pointing_gesture_recognition
+
 
 ### Features
 
