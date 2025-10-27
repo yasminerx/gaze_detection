@@ -37,14 +37,14 @@ This README explains:
 - how to run the ROS nodes and visualize results in RViz
 ---
 
-## Arborescence clé
+## Key Directory Structure
 
-- `pointing_gesture_recognition/` — code principal (détecteurs, librairies `gaze_lib/` et `arm_lib/`, scripts `dev/`, utilitaires et `ros/` wrappers).
-- `mediapipe/` — scripts tests et un environnement virtuel (`env/`) pour MediaPipe.
-- `realsense_ros_docker/` — configuration Docker / docker-compose pour une Intel RealSense (fournit les topics ROS camera).
-- `start/` — paramètres et scripts de démarrage (`params_realsense.yaml`, `start_realsense.sh`, ...).
-- `rosbags/` — enregistrements ROS (bagfiles) pour tests hors-ligne.
-- `rapport/` — sources LaTeX du rapport de stage.
+- `pointing_gesture_recognition/` — main code (detectors, `gaze_lib/` and `arm_lib/` libraries, `dev/` scripts, utilities, and `ros/` wrappers).
+- `mediapipe/` — test scripts and a virtual environment (`env/`) for MediaPipe.
+- `realsense_ros_docker/` — Docker / docker-compose configuration for an Intel RealSense (provides ROS camera topics).
+- `start/` — startup parameters and scripts (`params_realsense.yaml`, `start_realsense.sh`, ...).
+- `rosbags/` — ROS recordings (bagfiles) for offline testing.
+
 
 ---
 
